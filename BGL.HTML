@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعرف على مستوى سكرك</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .result-item {
+            margin: 10px 0;
+            padding: 10px;
+            border-right: 4px solid #3498db;
+            background-color: #f7f9fc;
+        }
+        .warning {
+            background-color: #ffe6e6;
+            border-right-color: #e74c3c;
+        }
+        .normal {
+            background-color: #e6ffe6;
+            border-right-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>تعرف على مستوى سكرك</h1>
+        
+        <div class="form-group">
+            <label for="sugarLevel">نسبة السكر في الدم (مج/دل)</label>
+            <input type="number" id="sugarLevel" required>
+        </div>
+
+        <div class="form-group">
+            <label for="age">العمر</label>
+            <input type="number" id="age" required>
+        </div>
+
+        <div class="form-group">
+            <label for="diabetic">هل أنت مصاب بالسكري؟</label>
+            <select id="diabetic" required>
+                <option value="">اختر إجابة</option>
+                <option value="yes">نعم</option>
+                <option value="no">لا</option>
+            </select>
+        </div>
+
+        <button onclick="calculateSugar()">تحليل النتائج</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculateSugar() {
+            const sugarLevel = parseFloat(document.getElementById('sugarLevel').value);
+            const age = parseInt(document.getElementById('age').value);
+            const isDiabetic = document.getElementById('diabetic').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!sugarLevel || !age || !isDiabetic) {
+                alert('الرجاء ملء جميع الحقول');
+                return;
+            }
+
+            let resultHTML = '';
+            let isNormal = false;
+
+            if (isDiabetic === 'yes') {
+                // For diabetic patients
+                if (sugarLevel < 70) {
+                    resultHTML = `
+                        <div class="result-item warning">
+                            <strong>• التشخيص: </strong>انخفاض خطير في مستوى السكر
+                        </div>
+                        <div class="result-item">
+                            <strong>• النصائح الفورية: </strong>
+                            <ul>
+                                <li>تناول مصدر سريع للسكر مثل عصير أو حلوى</li>
+                                <li>اتصل بطبيبك المعالج</li>
+                                <li>لا تقم بقيادة السيارة</li>
+                            </ul>
+                        </div>`;
+                } else if (sugarLevel >= 70 && sugarLevel <= 180) {
+                    isNormal = true;
+                    resultHTML = `
+                        <div class="result-item normal">
+                            <strong>• التشخيص: </strong>مستوى السكر ضمن المعدل المقبول لمريض السكري
+                        </div>
+                        <div class="result-item">
+                            <strong>• النصائح: </strong>
+                            <ul>
+                                <li>استمر في متابعة نظامك الغذائي وأدويتك</li>
+                                <li>حافظ على نشاطك البدني اليومي</li>
+                                <li>استمر في قياس السكر بانتظام</li>
+                            </ul>
+                        </div>`;
+                } else {
+                    resultHTML = `
+                        <div class="result-item warning">
+                            <strong>• التشخيص: </strong>ارتفاع في مستوى السكر
+                        </div>
+                        <div class="result-item">
+                            <strong>• النصائح الفورية: </strong>
+                            <ul>
+                                <li>راجع جرعات أدويتك مع طبيبك</li>
+                                <li>تجنب الأطعمة الغنية بالكربوهيدرات</li>
+                                <li>اشرب الماء بكثرة</li>
+                                <li>استشر طبيبك إذا استمر الارتفاع</li>
+                            </ul>
+                        </div>`;
+                }
+            } else {
+                // For non-diabetic patients
+                if (sugarLevel < 70) {
+                    resultHTML = `
+                        <div class="result-item warning">
+                            <strong>• التشخيص: </strong>انخفاض في مستوى السكر
+                        </div>
+                        <div class="result-item">
+                            <strong>• النصائح الفورية: </strong>
+                            <ul>
+                                <li>تناول وجبة خفيفة غنية بالكربوهيدرات</li>
+                                <li>استشر طبيباً للكشف عن السبب</li>
+                            </ul>
+                        </div>`;
+                } else if (sugarLevel >= 70 && sugarLevel <= 140) {
+                    isNormal = true;
+                    resultHTML = `
+                        <div class="result-item normal">
+                            <strong>• التشخيص: </strong>مستوى السكر طبيعي
+                        </div>
+                        <div class="result-item">
+                            <strong>• النصائح: </strong>
+                            <ul>
+                                <li>حافظ على نمط حياتك الصحي</li>
+                                <li>استمر في ممارسة الرياضة</li>
+                                <li>تناول غذاءً متوازناً</li>
+                            </ul>
+                        </div>`;
+                } else {
+                    resultHTML = `
+                        <div class="result-item warning">
+                            <strong>• التشخيص: </strong>ارتفاع في مستوى السكر
+                        </div>
+                        <div class="result-item">
+                            <strong>• النصائح الفورية: </strong>
+                            <ul>
+                                <li>راجع طبيبك في أقرب وقت</li>
+                                <li>قد تحتاج لفحوصات إضافية</li>
+                                <li>قلل من تناول السكريات والنشويات</li>
+                            </ul>
+                        </div>`;
+                }
+            }
+
+            resultDiv.innerHTML = resultHTML;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
